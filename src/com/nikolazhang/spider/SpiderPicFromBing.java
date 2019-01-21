@@ -22,12 +22,7 @@ public class SpiderPicFromBing {
 	
 	public static void main(String[] args) throws IOException {
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("=================================================");
-		System.out.println("= catch pictures from Bing                      =");
-		System.out.println("=       【2019年1月20日 下午1:08:47 NikolaZhang】    =");
-		System.out.println("=================================================");
-		System.out.println("请输入参数: [文件路径] [关键词] [下载数量]后回车");		
-		System.out.println("参数使用空格分割, 如: F:\\火影\\ 火影忍者 200");		
+		System.out.println("请输入参数, 回车执行!");		
 		String[] params = scanner.nextLine().split(" ");
 		System.out.println("开始下载----------");
 		System.out.println(params[0]);
