@@ -4,5 +4,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/jsoup-1.11.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/selenium"/>
+	<classpathentry kind="lib" path="lib/client-combined-3.4.0-nodeps.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
