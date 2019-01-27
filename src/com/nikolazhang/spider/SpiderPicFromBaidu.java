@@ -2,10 +2,10 @@ package com.nikolazhang.spider;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -15,7 +15,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
 import com.nikolazhang.util.FileDownload;
-import com.nikolazhang.util.HttpRequestUtil;
+import com.nikolazhang.util.MutiThreadDownLoad;
 
 
 public class SpiderPicFromBaidu {
@@ -28,21 +28,25 @@ public class SpiderPicFromBaidu {
 		String filepath = params[0];
 		String keywords = params[1];
 		int count = Integer.valueOf(params[2]);
+		if(count<=0) {
+			System.out.println("下载数量必须大于零！！！程序退出");
+			return;
+		}
 		
 		String url = inputBaiduImageUrl(keywords);
 		WebDriver connWeb = connWeb(url);
 		Iterator<WebElement> imageUrl = null;
-		for(int i = 0; i<count/25; i++) {
+		for(int i = 1; i<=count/5; i++) {
 			((JavascriptExecutor) connWeb).executeScript("window.scrollBy(0, document.body.scrollHeight)");;
 		}
+		System.out.println("页面元素加载中...请等待...!");
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(count*10);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			imageUrl = getImageUrl(connWeb);
-			// 获取完当前页面图片后下滚
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -51,7 +55,8 @@ public class SpiderPicFromBaidu {
 		} else {
 			System.out.println("图片下载失败!!!");
 		}
-		
+		System.out.println("下载结束----退出浏览器!!!");
+		connWeb.close();
 	}
 	
 	/**
@@ -63,14 +68,8 @@ public class SpiderPicFromBaidu {
 		System.setProperty("webdriver.chrome.driver", 
 				"chromedriver.exe");
 		WebDriver webDriver = new ChromeDriver();
-
 		webDriver.get(url);
-		System.out.println("+*+*+*+* 已连接网站: 【"+webDriver.getTitle()+"】");
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		System.out.println("*+*+*+*+* 已连接网站: 【"+webDriver.getTitle()+"】");
 		return webDriver;
 	}
 	
@@ -101,25 +100,22 @@ public class SpiderPicFromBaidu {
 		while(imgItor.hasNext()) {
 			WebElement nextImg = imgItor.next();
 			String addrImg = nextImg.getAttribute("data-objurl");
-			InputStream requestIO = HttpRequestUtil.httpRequestIO(addrImg);
-			try {
-				if (requestIO == null || requestIO.available() == 0) {
-					System.out.println("原图链接不能下载， 下载压缩后图片。");
-					addrImg = nextImg.getAttribute("data-thumburl");
-					requestIO = HttpRequestUtil.httpRequestIO(addrImg);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			String filename =  ++cnt + "." + nextImg.getAttribute("data-ext");
-			FileDownload.saveImageToDisk(requestIO, filepath+filename);
-			try {
-				if(requestIO != null)
-					requestIO.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			System.out.println("下载第"+ cnt +"张图片地址为: "+addrImg);
+			FileDownload.saveImageToDisk(addrImg, filepath+filename);
+
+//			CountDownLatch latch = new CountDownLatch(4);
+//			try {
+//				new MutiThreadDownLoad(4, addrImg, filepath+filename, latch)
+//					.executeDownLoad();
+//				latch.await();
+//				latch = null;
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 		}
+			
 	}
+	
+	// F:\壁纸\日常悠哉大王\ 日常悠哉大王 20
 }

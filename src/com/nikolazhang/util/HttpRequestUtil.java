@@ -89,13 +89,13 @@ public class HttpRequestUtil {
      * @param requestUrl 请求地址 
      * @return InputStream 
      */ 
-    public static InputStream httpRequestIO(String requestUrl) {  
+    public static InputStream httpRequestIO(String requestUrl, String method) {  
         InputStream inputStream = null;  
         try {  
             URL url = new URL(requestUrl);  
             HttpURLConnection httpUrlConn = (HttpURLConnection) url.openConnection();  
             httpUrlConn.setDoInput(true);  
-            httpUrlConn.setRequestMethod("GET");  
+            httpUrlConn.setRequestMethod(method);  
             httpUrlConn.connect();  
             // 获得返回的输入流  
             inputStream = httpUrlConn.getInputStream();  

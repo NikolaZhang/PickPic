@@ -73,7 +73,7 @@ public class SpiderPicFromBing {
 				String attr = getImgUrl(img);
 				if(!"".equals(attr) && attr.startsWith("https")) {
 					System.out.println("获取图片: "+attr);
-					InputStream requestIO = HttpRequestUtil.httpRequestIO(attr);
+					InputStream requestIO = HttpRequestUtil.httpRequestIO(attr, "GET");
 					long date = new Date().getTime();
 					String localpath = filepath + date+".png";
 					FileDownload.saveImageToDisk(requestIO, localpath);
